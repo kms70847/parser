@@ -1,0 +1,6 @@
+_ -> Expression
+Expression -> Expression * Binary
+Expression -> Expression + Binary
+Expression -> Binary
+Binary -> 0
+Binary -> 1

@@ -1,0 +1,26 @@
+#Starting symbol
+_ -> Expression
+
+Expression -> Number
+#sure wish I could do doubly recursive rules without parens! Oh well.
+Expression -> ( Expression BinaryOperator Expression )
+Expression -> ( Expression )
+
+BinaryOperator -> +
+BinaryOperator -> -
+BinaryOperator -> *
+BinaryOperator -> /
+
+Number -> Digit
+Number -> Number Digit
+
+Digit -> 0
+Digit -> 1
+Digit -> 2
+Digit -> 3
+Digit -> 4
+Digit -> 5
+Digit -> 6
+Digit -> 7
+Digit -> 8
+Digit -> 9

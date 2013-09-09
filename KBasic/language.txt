@@ -1,0 +1,59 @@
+_ -> StatementList
+
+StatementList -> Statement | Statement StatementList
+
+Statement -> PrintStatement
+Statement -> AssignmentStatement
+Statement -> WhileStatement
+Statement -> IfStatement
+Statement -> ExpressionStatement
+
+#terminating symbols must be one character long.
+PrintStatement -> PRINT Expression ;
+AssignmentStatement -> Identifier = Expression ;
+WhileStatement -> WHILE Expression DO StatementList END;
+IfStatement -> IF Expression THEN StatementList END;
+IfStatement -> IF Expression THEN StatementList ELSE StatementList END;
+
+
+#be careful with function calls, as they have no secial precedence in expressions.
+#so `foo + bar(23)` is equivalent to `(foo+bar)(23)`
+ExpressionStatement -> Expression ;
+
+Expression -> Value
+Expression -> Expression BinaryOperator Value
+Expression -> ( Expression )
+Expression -> FunctionDeclaration
+Expression -> FunctionCall
+
+FunctionDeclaration -> FUNCTION( FunctionDeclarationArgumentList ) BEGIN StatementList END | FUNCTION() BEGIN StatementList END
+FunctionDeclarationArgumentList -> Identifier | Identifier , FunctionDeclarationArgumentList
+
+FunctionCall -> Expression ( FunctionCallArgumentList ) | Expression ()
+FunctionCallArgumentList -> Expression | Expression , FunctionCallArgumentList
+
+#if I use == in place of EQUALS, then there's a shift-reduce conflict with AssignmentStatement.
+#we could resolve this by forcing ExpressionStatement to have a terminal such as DO, but this is preferable at the moment.
+BinaryOperator -> + | - | * | / | % | EQUALS | > | <
+
+#essentially, anything that can be used as an RHS in an assignment, that doesn't use operators.
+#todo: implement strings
+Value -> Identifier | Number | StringLiteral
+
+#an identifier is the name of a variable.
+#currently, any combination of characters can be an identifier.
+#the interpreter may wish to disallow reserved words like "while",
+#but the parser doesn't care.
+Identifier -> Letter | Letter Identifier
+
+Number -> Digit | Digit Number
+
+StringLiteral -> "" | " CharacterStream "
+
+CharacterStream -> Character | Character CharacterStream
+Character -> a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|0|1|2|3|4|5|6|7|8|9|:|,|!|%SPACE%
+#Character -> a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|0|1|2|3|4|5|6|7|8|9
+
+Letter -> a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z
+
+Digit -> 0|1|2|3|4|5|6|7|8|9
